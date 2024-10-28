@@ -1,0 +1,28 @@
+name: Replace Text in Repo
+
+on:
+  push:
+    branches:
+      - main  # or any other branch you want to trigger on
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  replace-text:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Replace text
+        run: |
+          # Replace '/com.termux/' with '/com.termix/' in all files
+          find . -type f -exec sed -i 's|/com\.termux/|/com\.termix/|g' {} +
+
+      - name: Commit changes
+        run: |
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
+          git commit -am "Replace '/com.termux/' with '/com.termix/'" || echo "No changes to commit"
+
+      - name: Push changes
+        run: git push
